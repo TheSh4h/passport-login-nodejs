@@ -29,7 +29,7 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.get('/', (req, res) => {
+app.get('/', checkAuthenticated, (req, res) => {
     res.render('index.ejs', { name: req.user.name })
 })
 
@@ -63,5 +63,13 @@ app.post('/register', async(req, res) => {
     }
     console.log(users)
 })
+
+function checkAuthenticated(req, res, next) {
+    if(req.isAuthenticated()) {
+        return next()
+    }
+
+    res.redirect('/login')
+}
 
 app.listen(3000)
